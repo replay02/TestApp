@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">TestApp</string>
+    <string name="message">메시지보내기</string>
+    <string name="new_activity">새로운 화면</string>
+
+    <string name="g1">좋음</string>
+    <string name="g2">보통</string>
+    <string name="g3">나쁨</string>
+    <string name="g4">매우나쁨</string>
+    <string name="g_error">알수없음</string>
+    <string name="pm_unit">㎍/㎥</string>
+</resources>
