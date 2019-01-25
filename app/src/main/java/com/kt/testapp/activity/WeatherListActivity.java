@@ -1,9 +1,8 @@
 package com.kt.testapp.activity;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -11,18 +10,17 @@ import com.kt.testapp.R;
 import com.kt.testapp.adapter.AdapterWeatherList;
 import com.kt.testapp.data.WeatherData;
 import com.kt.testapp.inf.EventListener;
-import com.kt.testapp.utils.MyLog;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.io.BufferedReader;
 import java.util.ArrayList;
 
 /**
@@ -41,16 +39,24 @@ public class WeatherListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-
+        // 리스트뷰 형태 RecyclerView set
         RecyclerView recyclerView = findViewById(R.id.rvWeather);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
 
+        // 구분선 추가
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(this,new LinearLayoutManager(this).getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
+        // adapter set
         adapter = new AdapterWeatherList(this, data);
         recyclerView.setAdapter(adapter);
 
         getAirCondition(API_KEY);
     }
 
+
+    // AsyncTask를 통해 미세먼지 농도 가져옴
     public void getAirCondition(String apikey) {
 
         GetWeatherAsyncTask task = new GetWeatherAsyncTask(this,apikey, new EventListener() {
@@ -66,23 +72,24 @@ public class WeatherListActivity extends BaseActivity {
         task.execute();
     }
 
-
     public static class GetWeatherAsyncTask extends AsyncTask<String,Void,ArrayList<WeatherData>> {
 
         private String result = null;;
         private String apiKey = null;
         private EventListener listener;
-        private Context ctx;
+        private BaseActivity activity;
 
-        public GetWeatherAsyncTask(Context ctx, String API_KEY, EventListener listener) {
+        public GetWeatherAsyncTask(BaseActivity activity, String API_KEY, EventListener listener) {
             apiKey = API_KEY;
             this.listener = listener;
-            this.ctx = ctx;
+            this.activity = activity;
         }
+
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            activity.showProgress();
         }
 
         @Override
@@ -127,7 +134,7 @@ public class WeatherListActivity extends BaseActivity {
             result = sb==null?"":sb.toString();
 
 
-            // parse
+            // XML 파싱
             try {
                 XmlPullParserFactory factory = null;
                 factory = XmlPullParserFactory.newInstance();
@@ -181,11 +188,11 @@ public class WeatherListActivity extends BaseActivity {
                         }
 
                         else if(isItem && tagName.equals("pm10Grade1h")) {
-                            weather.setPm10gradeString(ctx, parser.getText());
+                            weather.setPm10gradeString(activity, parser.getText());
                         }
 
                         else if(isItem && tagName.equals("pm25Grade1h")) {
-                            weather.setPm25gradeString(ctx, parser.getText());
+                            weather.setPm25gradeString(activity, parser.getText());
                         }
 
                     } else if (eventType == XmlPullParser.END_TAG) {
@@ -222,6 +229,7 @@ public class WeatherListActivity extends BaseActivity {
         protected void onPostExecute(ArrayList<WeatherData> s) {
             super.onPostExecute(s);
             listener.onEvent(s);
+            activity.hideProgress();
         }
     }
 }

@@ -81,8 +81,6 @@ public class WeatherData {
         }
     }
 
-
-
     public String getStationName() {
         return stationName;
     }

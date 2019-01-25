@@ -21,6 +21,9 @@
 
         <activity android:name=".activity.WeatherListActivity">
         </activity>
+        <activity android:name=".activity.GridImageActivity">
+        </activity>
+
     </application>
 
 </manifest>

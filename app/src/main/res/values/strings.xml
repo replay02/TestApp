@@ -1,12 +1,18 @@
 <resources>
+    <!--메인 메뉴-->
     <string name="app_name">TestApp</string>
     <string name="message">메시지보내기</string>
-    <string name="new_activity">새로운 화면</string>
+    <string name="new_activity">미세먼지농도</string>
+    <string name="image_grid">이미지그리드</string>
 
+    <!--미세먼지-->
     <string name="g1">좋음</string>
     <string name="g2">보통</string>
     <string name="g3">나쁨</string>
     <string name="g4">매우나쁨</string>
     <string name="g_error">알수없음</string>
     <string name="pm_unit">㎍/㎥</string>
+
+    <!--common-->
+    <string name="no_more_contents">목록의 마지막입니다</string>
 </resources>

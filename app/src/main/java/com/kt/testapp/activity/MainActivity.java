@@ -8,12 +8,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.kt.testapp.R;
-import com.kt.testapp.utils.MyLog;
 
 public class MainActivity extends AppCompatActivity {
 
     Button btnStart;
     Button btnStart2;
+    Button btnStart3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnStart = (Button)findViewById(R.id.btn_start_msg);
         btnStart2 = (Button)findViewById(R.id.btn_start_new_activity);
+        btnStart3 = (Button)findViewById(R.id.btn_image_grid);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,12 +37,17 @@ public class MainActivity extends AppCompatActivity {
                 goNewActivity();
             }
         });
+        btnStart3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goImageGridActivity();
+            }
+        });
     }
 
     public void goMessage(String msg) {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-//        sendIntent.setAction(Intent.ACTION_INSERT);
         sendIntent.putExtra(Intent.EXTRA_TEXT, msg);
         sendIntent.setType("text/plain");
 
@@ -58,4 +64,10 @@ public class MainActivity extends AppCompatActivity {
         Intent newIntent = new Intent(this, WeatherListActivity.class);
         startActivity(newIntent);
     }
+
+    public void goImageGridActivity() {
+        Intent newIntent = new Intent(this, GridImageActivity.class);
+        startActivity(newIntent);
+    }
+
 }
