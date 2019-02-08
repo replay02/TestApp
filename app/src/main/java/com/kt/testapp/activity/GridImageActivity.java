@@ -1,11 +1,21 @@
 package com.kt.testapp.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.kt.testapp.R;
@@ -13,6 +23,8 @@ import com.kt.testapp.adapter.AdapterImageGrid;
 import com.kt.testapp.inf.EventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -26,9 +38,12 @@ public class GridImageActivity extends BaseActivity implements EventListener{
 
     private final int NUM_OF_COLUMN = 3; // 화면 당 열 갯수
     private int ROW_CNT = 0;  // 화면 당 행 갯수
-    private final int MAX_CONTENTS_CNT = 150;  // 화면 당 행 갯수
+    private final int MAX_CONTENTS_CNT = 29;  // 화면 당 행 갯수
 
     private GetImageTask task;
+
+//    private ActivityOptionsCompat options;
+//    private ArrayList<Pair<View,String>> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,20 +52,20 @@ public class GridImageActivity extends BaseActivity implements EventListener{
 
         // grid 형태의 recyclerview set
         final RecyclerView recyclerView = findViewById(R.id.rvGridImage);
-        GridLayoutManager manager = new GridLayoutManager(this,NUM_OF_COLUMN);
+        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(NUM_OF_COLUMN, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
         // footer의 경우 3칸 차지 하도록 설정
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                switch(adapter.getItemViewType(position)){
-                    case AdapterImageGrid.FOOTER_VIEW:
-                        return NUM_OF_COLUMN;
-                    default:
-                        return 1;
-                }
-            }
-        });
+//        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//            @Override
+//            public int getSpanSize(int position) {
+//                switch(adapter.getItemViewType(position)){
+//                    case AdapterImageGrid.FOOTER_VIEW:
+//                        return NUM_OF_COLUMN;
+//                    default:
+//                        return 1;
+//                }
+//            }
+//        });
 
         // 스크롤 변경 사항 리스너
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -66,8 +81,9 @@ public class GridImageActivity extends BaseActivity implements EventListener{
                         isListEnd = true;
                         Toast.makeText(GridImageActivity.this, getString(R.string.no_more_contents), Toast.LENGTH_SHORT).show();
                         adapter.setShowFooter(false);
-//                        adapter.notifyItemChanged(data.size());
-                        adapter.notifyDataSetChanged();
+                        int refreshCnt = ((data.size() % NUM_OF_COLUMN)==0 ? 4 : data.size() % NUM_OF_COLUMN + 1);
+                        adapter.notifyItemRangeChanged(data.size() + 1 - refreshCnt, refreshCnt);
+//                        adapter.notifyDataSetChanged();
                     }
                     else {
                         if(task == null) {
@@ -80,6 +96,26 @@ public class GridImageActivity extends BaseActivity implements EventListener{
         });
         adapter = new AdapterImageGrid(this, data);
         recyclerView.setAdapter(adapter);
+
+        adapter.setClickListener(new AdapterImageGrid.ItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(GridImageActivity.this, ImageDetailActivity.class);
+                intent.putExtra("position", position);
+                intent.putExtra("url",data);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                    Pair<View, String> pair1 = Pair.create(adapter.getPositionView(position), "station");
+                    ActivityOptionsCompat options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation(GridImageActivity.this, pair1);
+                    ActivityCompat.startActivity(GridImageActivity.this,intent,options.toBundle());
+                }
+                else {
+                    GridImageActivity.this.startActivity(intent);
+                }
+            }
+        });
 
         recyclerView.post(new Runnable() {
             @Override

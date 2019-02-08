@@ -23,6 +23,10 @@
         </activity>
         <activity android:name=".activity.GridImageActivity">
         </activity>
+        <activity android:name=".activity.ImageDetailActivity">
+        </activity>
+
+
 
     </application>
 

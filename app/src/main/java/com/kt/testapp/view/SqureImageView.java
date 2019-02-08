@@ -25,6 +25,6 @@ public class SqureImageView extends android.support.v7.widget.AppCompatImageView
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // 가로 넓이를 기준으로 세로 넓이도 설정
-        super.onMeasure(widthMeasureSpec, widthMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }

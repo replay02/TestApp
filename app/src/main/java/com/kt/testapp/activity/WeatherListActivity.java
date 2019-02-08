@@ -130,7 +130,6 @@ public class WeatherListActivity extends BaseActivity {
             catch (Exception e) {
                 e.printStackTrace();
             }
-
             result = sb==null?"":sb.toString();
 
 
