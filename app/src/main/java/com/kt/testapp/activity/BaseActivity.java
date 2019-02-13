@@ -11,7 +11,7 @@ import com.kt.testapp.utils.CustProgressDialog;
 public class BaseActivity extends AppCompatActivity {
     protected String LOG_TAG = this.getClass().getSimpleName();
     protected CustProgressDialog pd;
-    protected void showProgress() {
+    public void showProgress() {
 
         if (pd == null)
             pd = CustProgressDialog.getInstance(this,false);
@@ -24,7 +24,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected void hideProgress() {
+    public void hideProgress() {
 
         if (pd == null) return ;
 

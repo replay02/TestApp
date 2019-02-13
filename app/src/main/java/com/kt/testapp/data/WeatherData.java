@@ -2,13 +2,18 @@ package com.kt.testapp.data;
 
 import android.content.Context;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kt.testapp.R;
+
+import java.io.Serializable;
 
 /**
  * Created by kim-young-hyun on 24/01/2019.
  */
 
-public class WeatherData {
+public class WeatherData implements Serializable{
 
     private String stationName;
     private String dataTime;
@@ -16,6 +21,8 @@ public class WeatherData {
     private String pm25Value;
     private String pm10gradeString;
     private String pm25gradeString;
+    private String dmX;
+    private String dmY;
 
     public String getPm10gradeString() {
         return pm10gradeString;
@@ -111,5 +118,34 @@ public class WeatherData {
 
     public void setPm25Value(String pm25Value) {
         this.pm25Value = pm25Value;
+    }
+
+    public String getDmX() {
+        return dmX;
+    }
+
+    public void setDmX(String dmX) {
+        this.dmX = dmX;
+    }
+
+    public String getDmY() {
+        return dmY;
+    }
+
+    public void setDmY(String dmY) {
+        this.dmY = dmY;
+    }
+
+    @Override
+    public String toString() {
+        String json = null;
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        try {
+            json = ow.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return json;
     }
 }

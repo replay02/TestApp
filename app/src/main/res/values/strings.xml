@@ -4,6 +4,7 @@
     <string name="message">메시지보내기</string>
     <string name="new_activity">미세먼지농도</string>
     <string name="image_grid">이미지그리드</string>
+    <string name="map">구글 맵</string>
 
     <!--미세먼지-->
     <string name="g1">좋음</string>
@@ -12,6 +13,13 @@
     <string name="g4">매우나쁨</string>
     <string name="g_error">알수없음</string>
     <string name="pm_unit">㎍/㎥</string>
+
+    <string name="error_location">충전소 위치 정보를 알 수 없습니다</string>
+    <string name="time">측정 일시 : </string>
+    <string name="num_pm10">pm10 수치 : </string>
+    <string name="num_pm25">pm2.5 수치 : </string>
+    <string name="grade_pm10">pm10 등급 : </string>
+    <string name="grade_pm25">pm2.5 등급 : </string>
 
     <!--common-->
     <string name="no_more_contents">목록의 마지막입니다</string>

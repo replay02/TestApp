@@ -94,7 +94,7 @@ public class AdapterWeatherList extends RecyclerView.Adapter<AdapterWeatherList.
     }
 
     // allows clicks events to be caught
-    private void setClickListener(ItemClickListener itemClickListener) {
+    public void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 

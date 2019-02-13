@@ -68,5 +68,8 @@ public class MainActivity extends AppCompatActivity {
         Intent newIntent = new Intent(this, GridImageActivity.class);
         startActivity(newIntent);
     }
-
+    public void goMapActivity() {
+        Intent newIntent = new Intent(this, GoogleMapActivity.class);
+        startActivity(newIntent);
+    }
 }
