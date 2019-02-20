@@ -44,7 +44,7 @@ public class WeatherListActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, int position) {
                 Intent newIntent = new Intent(WeatherListActivity.this, GoogleMapActivity.class);
-                newIntent.putExtra(GoogleMapActivity.KEY_WHEATHER_OBJ,data.get(position));
+                newIntent.putExtra(GoogleMapActivity.KEY_WEATHER_OBJ,data.get(position));
                 startActivity(newIntent);
             }
         });

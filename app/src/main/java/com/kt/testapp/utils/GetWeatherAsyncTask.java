@@ -18,7 +18,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.WeakHashMap;
 
 /**
  * Created by kim-young-hyun on 12/02/2019.
@@ -50,7 +49,6 @@ public class GetWeatherAsyncTask extends AsyncTask<String,Void,Object> {
 
     private Object parseData(String result) {
         ArrayList<WeatherData> datas = new ArrayList<>();  // GET_WEATHER return value;
-//        WeatherData data = new WeatherData();  // GET_LOCATION return value;
 
         // XML 파싱
         try {

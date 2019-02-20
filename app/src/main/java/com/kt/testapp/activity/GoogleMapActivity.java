@@ -3,14 +3,8 @@ package com.kt.testapp.activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -24,23 +18,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.kt.testapp.database.DBHelper;
 import com.kt.testapp.R;
-import com.kt.testapp.adapter.AdapterWeatherList;
 import com.kt.testapp.data.WeatherData;
 import com.kt.testapp.inf.EventListener;
 import com.kt.testapp.utils.GetWeatherAsyncTask;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
+import com.kt.testapp.utils.MyLog;
 
 /**
  * Created by kim-young-hyun on 22/01/2019.
@@ -48,14 +31,9 @@ import java.util.ArrayList;
 
 public class GoogleMapActivity extends BaseActivity implements OnMapReadyCallback {
 
-//    private String locationName;
-//    private String snippet;
-
     private WeatherData weather;
 
-//    public static String KEY_NAME = "location_name";
-//    public static String KEY_SNIPPET = "location_name";
-    public static String KEY_WHEATHER_OBJ = "weather";
+    public static String KEY_WEATHER_OBJ = "weather";
 
     private GoogleMap googleMap;
 
@@ -71,10 +49,8 @@ public class GoogleMapActivity extends BaseActivity implements OnMapReadyCallbac
 
         Intent intent = getIntent();
 
-        if(intent != null && intent.getSerializableExtra(KEY_WHEATHER_OBJ) != null) {
-//            locationName = intent.getBu(KEY_NAME);
-//            snippet = intent.getStringExtra(KEY_SNIPPET);
-            weather = (WeatherData) intent.getSerializableExtra(KEY_WHEATHER_OBJ);
+        if(intent != null && intent.getSerializableExtra(KEY_WEATHER_OBJ) != null) {
+            weather = (WeatherData) intent.getSerializableExtra(KEY_WEATHER_OBJ);
         }
     }
 
@@ -82,18 +58,52 @@ public class GoogleMapActivity extends BaseActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(final GoogleMap map) {
         googleMap = map;
-        GetWeatherAsyncTask task = new GetWeatherAsyncTask(this,GetWeatherAsyncTask.GET_LOCATION, new EventListener() {
-            @Override
-            public void onEvent(Object obj) {
-                Log.e(LOG_TAG,"GetWeatherAsyncTask onEvent()'s obj : " + obj.toString());
-                if(obj instanceof WeatherData) {
-                    setMapMarker((WeatherData)obj);
-                }
-            }
-        });
-        task.setWeatherData(weather);
-        task.execute();
 
+        final DBHelper dbHelper = DBHelper.getInstance(GoogleMapActivity.this);
+
+
+        LatLng latlng = dbHelper.getLatLng(weather.getStationName());
+        // db에 위도 경도 저장 된 내역이 있다면 db 값으로 셋팅
+        if(latlng != null) {
+            try {
+                weather.setDmX(String.valueOf(latlng.latitude));
+                weather.setDmY(String.valueOf(latlng.longitude));
+                setMapMarker(weather);
+
+                Toast.makeText(GoogleMapActivity.this, "load from saved station latlng",Toast.LENGTH_SHORT ).show();
+            }
+            catch (Exception e) {
+                MyLog.e(LOG_TAG, e.toString());
+            }
+
+        }
+        else  {
+            GetWeatherAsyncTask task = new GetWeatherAsyncTask(this,GetWeatherAsyncTask.GET_LOCATION, new EventListener() {
+                @Override
+                public void onEvent(Object obj) {
+                    MyLog.e(LOG_TAG,"GetWeatherAsyncTask onEvent()'s obj : " + obj.toString());
+                    if(obj instanceof WeatherData) {
+
+                        WeatherData data = ((WeatherData) obj);
+
+                        // 측정소의 위도경도 정보를 정상적으로 가져오지 못했을 경우
+                        if(data == null || TextUtils.isEmpty(data.getDmY()) || TextUtils.isEmpty(data.getDmX())) {
+                            Toast.makeText(GoogleMapActivity.this, "load data from server error",Toast.LENGTH_SHORT ).show();
+                        }
+                        else {
+                            setMapMarker((WeatherData)obj);
+                            long insertedId = dbHelper.insertStationLatLng(((WeatherData) obj).getStationName(),
+                                    ((WeatherData) obj).getDmX(), ((WeatherData) obj).getDmY());
+
+                            Toast.makeText(GoogleMapActivity.this, "load data from server and saved station's latlng data at " + insertedId,Toast.LENGTH_SHORT ).show();
+                        }
+
+                    }
+                }
+            });
+            task.setWeatherData(weather);
+            task.execute();
+        }
     }
 
     private void setMapMarker(WeatherData data) {
