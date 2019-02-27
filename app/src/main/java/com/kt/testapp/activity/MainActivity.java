@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnStart;
     Button btnStart2;
     Button btnStart3;
+    Button btnStart4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         btnStart = (Button)findViewById(R.id.btn_start_msg);
         btnStart2 = (Button)findViewById(R.id.btn_start_new_activity);
         btnStart3 = (Button)findViewById(R.id.btn_image_grid);
+        btnStart4 = (Button)findViewById(R.id.btn_start_check_service);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +45,14 @@ public class MainActivity extends AppCompatActivity {
                 goImageGridActivity();
             }
         });
+
+        btnStart4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goCheckServiceActivity();
+            }
+        });
+
     }
 
     public void goMessage(String msg) {
@@ -68,8 +78,10 @@ public class MainActivity extends AppCompatActivity {
         Intent newIntent = new Intent(this, GridImageActivity.class);
         startActivity(newIntent);
     }
-    public void goMapActivity() {
-        Intent newIntent = new Intent(this, GoogleMapActivity.class);
+
+    public void goCheckServiceActivity() {
+        Intent newIntent = new Intent(this, CheckServiceActivity.class);
         startActivity(newIntent);
     }
+
 }

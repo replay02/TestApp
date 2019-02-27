@@ -55,7 +55,7 @@ public class AdapterWeatherList extends RecyclerView.Adapter<AdapterWeatherList.
     // total number of rows
     @Override
     public int getItemCount() {
-        return weatherDatas.size();
+        return weatherDatas==null?0:weatherDatas.size();
     }
 
     public void setData(ArrayList<WeatherData> data) {

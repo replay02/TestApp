@@ -21,12 +21,20 @@
 
         <activity android:name=".activity.WeatherListActivity">
         </activity>
+
         <activity android:name=".activity.GridImageActivity">
         </activity>
+
         <activity android:name=".activity.ImageDetailActivity">
         </activity>
+
         <activity android:name=".activity.GoogleMapActivity">
         </activity>
+
+        <activity android:name=".activity.CheckServiceActivity">
+        </activity>
+
+        <service android:name=".service.MyService"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

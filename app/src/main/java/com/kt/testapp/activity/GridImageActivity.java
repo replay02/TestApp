@@ -13,11 +13,19 @@ import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.kt.testapp.R;
 import com.kt.testapp.adapter.AdapterImageGrid;
 import com.kt.testapp.inf.EventListener;
@@ -42,13 +50,47 @@ public class GridImageActivity extends BaseActivity implements EventListener{
 
     private GetImageTask task;
 
-//    private ActivityOptionsCompat options;
-//    private ArrayList<Pair<View,String>> list;
+    private Toolbar toolbar;
+
+
+    private final String[] dummyData = new String[] {
+            "https://cdn.pixabay.com/photo/2018/11/29/19/29/autumn-3846345__480.jpg",
+            "https://cdn.pixabay.com/photo/2017/05/05/16/57/buzzard-2287699__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/12/25/21/45/crystal-ball-photography-3894871__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/12/15/02/53/flower-3876195__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/11/23/14/19/forest-3833973__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/11/29/21/19/hamburg-3846525__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/11/04/20/21/harley-davidson-3794909__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/11/11/16/51/ibis-3809147__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/07/16/13/17/kiss-3541905__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/10/28/16/11/landscape-3779159__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/12/09/14/44/leaf-3865014__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/11/24/02/05/lichterkette-3834926__480.jpg",
+            "https://cdn.pixabay.com/photo/2019/01/05/17/05/man-3915438__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/08/06/16/30/mushroom-3587888__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/12/16/18/12/open-fire-3879031__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/12/29/23/49/rays-3902368__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/12/04/22/38/road-3856796__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/11/17/22/15/tree-3822149__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/10/21/21/28/autumn-3763897__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/10/14/13/01/background-3746423__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/10/18/23/53/cactus-3757657__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/10/13/17/31/fall-leaves-3744649__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/10/07/11/49/fallow-deer-3729821__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/10/12/22/08/flamingo-3743094__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/10/22/11/58/grass-3765172__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/10/11/23/08/hahn-3741129__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/09/06/23/37/hydrangea-3659614__480.jpg",
+            "https://cdn.pixabay.com/photo/2018/12/28/01/34/rum-3898745__480.jpg"
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_image);
+
+        setToolbar();
 
         // grid 형태의 recyclerview set
         final RecyclerView recyclerView = findViewById(R.id.rvGridImage);
@@ -87,7 +129,8 @@ public class GridImageActivity extends BaseActivity implements EventListener{
                     }
                     else {
                         if(task == null) {
-                            task = new GetImageTask(GridImageActivity.this,ROW_CNT,NUM_OF_COLUMN, data, false,GridImageActivity.this);
+                            task = new GetImageTask(GridImageActivity.this,ROW_CNT,NUM_OF_COLUMN, data, false,
+                                    dummyData,GridImageActivity.this);
                             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         }
                     }
@@ -124,11 +167,55 @@ public class GridImageActivity extends BaseActivity implements EventListener{
                 int width = recyclerView.getWidth() - (int)dp2px(getResources(),6.0f);
                 int widthOneColumn = width / NUM_OF_COLUMN;
                 ROW_CNT = (height / widthOneColumn) + 1;
-                task = new GetImageTask(GridImageActivity.this,ROW_CNT,NUM_OF_COLUMN, data, true,GridImageActivity.this);
+                task = new GetImageTask(GridImageActivity.this,ROW_CNT,NUM_OF_COLUMN, data, true,
+                        dummyData,GridImageActivity.this);
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
     }
+
+    private void setTopImage() {
+        int rnd = new Random().nextInt(dummyData.length);
+
+
+        if(AdapterImageGrid.OBJ_KEY.get(rnd)==null) {
+            ObjectKey key = new ObjectKey(String.valueOf(dummyData[rnd]));
+            AdapterImageGrid.OBJ_KEY.put(rnd,key);
+        }
+        ImageView topImage = findViewById(R.id.topImage);
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.priority(Priority.HIGH);
+        requestOptions.signature(AdapterImageGrid.OBJ_KEY.get(rnd));
+        requestOptions.skipMemoryCache(true);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
+        requestOptions.error(R.drawable.default_image);
+        try {
+            // 글라이드 호출
+            Glide.with(this)
+                    .load(dummyData[rnd])
+//                    .transition(GenericTransitionOptions.with(R.anim.dim_anim))
+                    .apply(requestOptions)
+                    .into(topImage);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void setToolbar() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setTitle(getString(R.string.image_grid));
+
+        //Toolbar 왼쪽에 버튼 추가
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.xxx);
+
+        setTopImage();
+
+    }
+
 
     public float dp2px(Resources resources, float dp) {
         return  TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
@@ -154,45 +241,17 @@ public class GridImageActivity extends BaseActivity implements EventListener{
 
         private boolean isProgressShow = true;
 
-        private String[] dummyData = new String[] {
-                "https://cdn.pixabay.com/photo/2018/11/29/19/29/autumn-3846345__480.jpg",
-                "https://cdn.pixabay.com/photo/2017/05/05/16/57/buzzard-2287699__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/12/25/21/45/crystal-ball-photography-3894871__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/12/15/02/53/flower-3876195__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/11/23/14/19/forest-3833973__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/11/29/21/19/hamburg-3846525__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/11/04/20/21/harley-davidson-3794909__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/11/11/16/51/ibis-3809147__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/07/16/13/17/kiss-3541905__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/10/28/16/11/landscape-3779159__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/12/09/14/44/leaf-3865014__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/11/24/02/05/lichterkette-3834926__480.jpg",
-                "https://cdn.pixabay.com/photo/2019/01/05/17/05/man-3915438__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/08/06/16/30/mushroom-3587888__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/12/16/18/12/open-fire-3879031__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/12/29/23/49/rays-3902368__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/12/04/22/38/road-3856796__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/11/17/22/15/tree-3822149__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/10/21/21/28/autumn-3763897__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/10/14/13/01/background-3746423__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/10/18/23/53/cactus-3757657__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/10/13/17/31/fall-leaves-3744649__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/10/07/11/49/fallow-deer-3729821__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/10/12/22/08/flamingo-3743094__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/10/22/11/58/grass-3765172__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/10/11/23/08/hahn-3741129__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/09/06/23/37/hydrangea-3659614__480.jpg",
-                "https://cdn.pixabay.com/photo/2018/12/28/01/34/rum-3898745__480.jpg"
-        };
+        private String[] dummyData;
 
         public GetImageTask(BaseActivity activity,int cnt, int numOfColumn, ArrayList<String> data,
-                            boolean isProgressShow, EventListener listener) {
+                            boolean isProgressShow, String[] dummyData, EventListener listener) {
             this.listener = listener;
             this.activity = activity;
             this.data = data;
             this.cnt = cnt;
             this.numOfColumn = numOfColumn;
             this.isProgressShow = isProgressShow;
+            this.dummyData = dummyData;
         }
 
 
@@ -225,6 +284,24 @@ public class GridImageActivity extends BaseActivity implements EventListener{
             if(isProgressShow)
                 activity.hideProgress();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+
+
+                break;
+            case android.R.id.home:
+
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 
