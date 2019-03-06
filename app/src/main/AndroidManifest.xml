@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kt.testapp">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name="com.kt.testapp.app.TestApplication"
         android:allowBackup="true"
@@ -16,6 +18,7 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
         </activity>
 
@@ -34,7 +37,18 @@
         <activity android:name=".activity.CheckServiceActivity">
         </activity>
 
-        <service android:name=".service.MyService"/>
+        <service android:name=".service.MyService"
+            />
+
+        <service android:name=".service.BootJobIntentService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
+        <receiver android:name=".receiver.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

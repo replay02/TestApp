@@ -1,6 +1,9 @@
 package com.kt.testapp.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnStart2;
     Button btnStart3;
     Button btnStart4;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
 
     public void goMessage(String msg) {
         Intent sendIntent = new Intent();

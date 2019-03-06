@@ -1,8 +1,10 @@
 package com.kt.testapp.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -33,6 +35,10 @@ public class CheckServiceActivity extends BaseActivity {
 
     private MyService myService; // 서비스 객체
     private boolean isService = false; // 서비스 중인 확인용
+
+    static final String ACTION_MY_INTENT = "com.kt.testapp.intent.action.MY_INTENT";
+
+    private BroadcastReceiver tickReceiver;
 
     private ServiceConnection conn = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -73,6 +79,8 @@ public class CheckServiceActivity extends BaseActivity {
                 bindService(intent,
                         conn, // 서비스와 연결에 대한 정의
                         Context.BIND_AUTO_CREATE);
+
+//                startService(new Intent(CheckServiceActivity.this,MyService.class));
 
                 isService = true;
             }
@@ -120,6 +128,35 @@ public class CheckServiceActivity extends BaseActivity {
         Linkify.addLinks(tvGoDocs, pattern1,
                 "https://developer.android.com/guide/components/services?hl=ko",null,mTransform);
 
+
+        registerTickReceiver();
+
     }
+
+    private void registerTickReceiver() {
+
+        tickReceiver = new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == 0) {
+                    Toast.makeText(CheckServiceActivity.this,"1분 tick 수신!",Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        registerReceiver(tickReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+    }
+
+
+    @Override
+    protected void onDestroy() {
+
+        if(tickReceiver != null) {
+            unregisterReceiver(tickReceiver);
+            tickReceiver = null;
+        }
+
+        super.onDestroy();
+    }
+
 
 }
