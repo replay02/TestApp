@@ -1,6 +1,6 @@
 <resources>
     <!--메인 메뉴-->
-    <string name="app_name">TestApp</string>
+    <string name="app">TestApp</string>
     <string name="message">메시지보내기</string>
     <string name="new_activity">미세먼지농도</string>
     <string name="image_grid">이미지그리드</string>
@@ -36,5 +36,8 @@
     <string name="google_doc_service">Android Service 공식 문서 보러가기</string>
     <string name="notification_title">알림</string>
     <string name="notification_message">음악 재생 중</string>
+
+
+
 
 </resources>

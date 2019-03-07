@@ -8,7 +8,7 @@
         android:name="com.kt.testapp.app.TestApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/app"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:debuggable="true"
@@ -16,7 +16,6 @@
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
 
             </intent-filter>
@@ -53,6 +52,15 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCn-itDgHeBEQISH-TmXSNwMUfcvpg6d6k" />
+
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="@string/kakao_app_key" />
+
+        <meta-data
+            android:name="com.kakao.sdk.kakaonavi.useWebView"
+            android:value="false" />
 
     </application>
 

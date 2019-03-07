@@ -15,10 +15,10 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.kt.testapp.R;
 import com.kt.testapp.activity.MainActivity;
-import com.kt.testapp.utils.MyLog;
 
 public class MyService extends Service {
 

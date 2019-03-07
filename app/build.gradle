@@ -36,6 +36,13 @@ dependencies {
     // for obj to json
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.+'
 
+
+    // 카카오내비 sdk를 사용하기 위해 필요.
+    implementation group: 'com.kakao.sdk', name: 'kakaonavi', version: '+'
+
+
+
+
     // google map lib
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
