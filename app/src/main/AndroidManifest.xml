@@ -48,6 +48,11 @@
             </intent-filter>
         </receiver>
 
+        <provider
+            android:authorities="com.kt.testapp.MyContentProvider"
+            android:name=".database.MyContentProvider"
+            android:exported="true"
+        />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

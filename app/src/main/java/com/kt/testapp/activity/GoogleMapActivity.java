@@ -1,9 +1,11 @@
 package com.kt.testapp.activity;
 
 import android.app.FragmentManager;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
@@ -99,10 +101,18 @@ public class GoogleMapActivity extends BaseActivity implements OnMapReadyCallbac
                             Toast.makeText(GoogleMapActivity.this, "load data from server error", Toast.LENGTH_SHORT).show();
                         } else {
                             setMapMarker((WeatherData) obj);
-                            long insertedId = dbHelper.insertStationLatLng(((WeatherData) obj).getStationName(),
-                                    ((WeatherData) obj).getDmX(), ((WeatherData) obj).getDmY());
 
-                            Toast.makeText(GoogleMapActivity.this, "load data from server and saved station's latlng data at " + insertedId, Toast.LENGTH_SHORT).show();
+
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("station_name",((WeatherData) obj).getStationName());
+                            contentValues.put("lat",((WeatherData) obj).getDmX());
+                            contentValues.put("lon",((WeatherData) obj).getDmY());
+                            getContentResolver().insert(Uri.parse("content://com.kt.testapp.MyContentProvider/weather_location"),contentValues);
+
+
+//                            long insertedId = dbHelper.insertStationLatLng(((WeatherData) obj).getStationName(),
+//                                    ((WeatherData) obj).getDmX(), ((WeatherData) obj).getDmY());
+//                            Toast.makeText(GoogleMapActivity.this, "load data from server and saved station's latlng data at " + insertedId, Toast.LENGTH_SHORT).show();
                         }
 
                     }
